@@ -4,10 +4,10 @@ const NotFoundError = require('./error.notFound')
 const UnAuthorizedError = require('./error.unAuthorized')
 
 const CustomError = {
-    BadRequestError,
-    ForbiddenError,
-    NotFoundError,
-    UnAuthorizedError,
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  UnAuthorizedError
 }
 
 module.exports = CustomError

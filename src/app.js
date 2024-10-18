@@ -14,13 +14,13 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(fileUpload())
-app.use('/v1/uploads', express.static(path.join('uploads')));
+app.use('/v1/uploads', express.static(path.join('uploads')))
 
 // application middleware
 app.use('/v1', Router)
 
 app.get('/health_check', (req, res) => {
-    res.send('server is working')
+  res.send('server is working')
 })
 
 // error handling middlewares
