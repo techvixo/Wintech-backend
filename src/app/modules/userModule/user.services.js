@@ -1,0 +1,31 @@
+const User = require("./user.model")
+
+// service for create new user
+const createUser = async(data) => {
+    return await User.create(data);
+}
+
+// service for get specific user
+const getSpecificUser = async(id) => {
+    return await User.findOne({_id: id})
+}
+
+// service for update specific user
+const updateSpecificUser = async(id, data) => {
+    return await User.updateOne({_id: id}, data, {
+        runValidators: true
+    })
+}
+
+// service for delete specific user
+const deleteSpecificUser = async(id) => {
+    return await User.deleteOne({_id: id})
+}
+
+
+module.exports = {
+    createUser,
+    getSpecificUser,
+    updateSpecificUser,
+    deleteSpecificUser,
+}
