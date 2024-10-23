@@ -5,7 +5,9 @@ const fileUploader = require('../../../utils/fileUploader');
 const IdGenerator = require('../../../utils/idGenerator');
 const CustomError = require('../../errors');
 const { createVerification } = require('../varificationModule/verification.services');
-const userServices = require('./user.services')
+const userServices = require('./user.services');
+const { server_base_url } = require('../../../config');
+const sendMail = require('../../../utils/sendEmail');
 
 // controller for create new user
 const createUser = async(req, res) => {
@@ -14,26 +16,35 @@ const createUser = async(req, res) => {
     const userId = IdGenerator.generateUserId();
     const userImagePath = await fileUploader(req.files, `user-image-${userData.userName}`, "image")
 
+    const expireDate = new Date()
+    expireDate.setMinutes(expireDate.getMinutes() + 30)
+
     userData.userId = userId
     userData.image = userImagePath
+    userData.verification = {
+        code: IdGenerator.generateCode(),
+        expireDate
+    }
 
     const user = await userServices.createUser(userData);
     if(!user){
         throw new CustomError.BadRequestError("Failed to create new user!")
     }
 
-    const expireDate = new Date()
-    expireDate.setMinutes(expireDate.getMinutes() + 30)
-    const verificationPayload = {
-        userId,
-        code: IdGenerator.generateCode().toString(),
-        expireDate,
-        type: "email-verification",
-    }
-    console.log(verificationPayload)
-    await createVerification(verificationPayload)
-
     const {password, ...userInfoAcceptPass} = user.toObject();
+
+    // send email verification mail
+    // const content = `Your veirfication code is ${req.body?.emailVerification?.code}`
+    const verificationLink = `${server_base_url}/v1/auth/verify-email/${user._id}?userCode=${userData.verification.code}`
+    const content = `Click the following link to verify your email: ${verificationLink}`
+    const mailOptions = {
+        from: 'fahadtabedge@gmail.com',
+        to: req.body.email,
+        subject: 'Wintech - Email Verification',
+        text: content,
+    }
+
+    sendMail(mailOptions)
 
     sendResponse(res, {
         statusCode: StatusCodes.CREATED,

@@ -9,7 +9,8 @@ const {
 } = require('../loginHistoryModule/loginHistory.services')
 const userServices = require('../userModule/user.services')
 const User = require('../userModule/user.model')
-const Verification = require('../varificationModule/varification.model')
+const IdGenerator = require('../../../utils/idGenerator')
+const sendMail = require('../../../utils/sendEmail')
 
 // controller for user login
 const userLogin = async (req, res) => {
@@ -76,17 +77,15 @@ const userEmailVerify = async (req, res) => {
   const { userCode } = req.query
   const userId = req.params.id
   const user = await userServices.getSpecificUser(userId)
-const verification = await Verification.compareCode(userCode)
-  if (!verification) {
+  const isVerificationCodeMatch = await user.compareVerificationCode(userCode)
+  if (!isVerificationCodeMatch) {
     throw new CustomError.BadRequestError('Invalid code!')
   }
 
   if (!user) throw new CustomError.BadRequestError('User not found!')
 
   const now = new Date()
-  if (verification.expireDate && verification.expireDate < now) {
-    verification.status = 'lose'
-    await verification.save()
+  if (user.verification.expireDate && user.verification.expireDate < now) {
     throw new CustomError.BadRequestError(
       'Sorry, Email verification Code using date expired!'
     )
@@ -94,8 +93,11 @@ const verification = await Verification.compareCode(userCode)
 
   // update the email verification status of user
   await User.findByIdAndUpdate(user._id, { isEmailVerified: true })
-  verification.status = 'done'
-  await verification.save()
+
+  // set null verification object in user model
+  await User.findByIdAndUpdate(user._id, {
+    verification: { code: null, expireDate: null }
+  })
 
   res.status(StatusCodes.OK).send(`<html>
     <head>
@@ -174,7 +176,109 @@ const verification = await Verification.compareCode(userCode)
 `)
 }
 
+// controller for send otp
+const sendOTP = async (req, res) => {
+  const { id } = req.params
+  const { email } = req.body
+  if (!id) {
+    throw new CustomError.BadRequestError('Missing id in request params!')
+  }
+  if (!email) {
+    throw new CustomError.BadRequestError('Missing email in request body!')
+  }
+
+  const user = await userServices.getSpecificUser(id)
+  if (!user) {
+    throw new CustomError.BadRequestError('User not found!')
+  }
+
+  const code = IdGenerator.generateCode()
+  const expireDate = new Date()
+  expireDate.setMinutes(expireDate.getMinutes() + 5)
+  const verification = {
+    code,
+    expireDate
+  }
+
+  user.verification = verification
+  await user.save()
+
+  // send verification mail
+  const textContent = `
+  Hi ${user.fullName},
+  
+  You have requested to reset your password. Please use the following One-Time Password (OTP) to complete the process. This OTP is valid for 5 minutes.
+  
+  Your OTP: ${code}
+  
+  If you did not request this, please ignore this email and your password will remain unchanged.
+  
+  For security reasons, do not share this OTP with anyone.
+  
+  Best regards,
+  Wintech Team
+  
+  Need help? Contact our support team at support@wintech.com.
+  © 2024 Wintech. All rights reserved.
+  `
+
+  const mailOptions = {
+    from: 'fahadtabedge@gmail.com',
+    to: email,
+    subject: 'Wintech - Password Reset OTP',
+    text: textContent
+  }
+
+  sendMail(mailOptions)
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Password reset otp sended.'
+  })
+}
+
+const resendEmailVerificationLink = async (req, res) => {
+  const { email } = req.body
+  const code = IdGenerator.generateCode()
+  const expireDate = new Date()
+  expireDate.setMinutes(expireDate.getMinutes() + 5)
+  const verification = {
+    code: code,
+    expireDate
+  }
+
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new CustomError.BadRequestError('No user found!')
+  }
+
+  user.verification = verification
+  await user.save()
+
+  // send email verification mail
+  // const content = `Your veirfication code is ${req.body?.emailVerification?.code}`
+  const verificationLink = `${config.server_base_url}/v1/auth/verify-email/${user._id}?userCode=${verification.code}`
+  const content = `Click the following link to verify your email: ${verificationLink}`
+  const mailOptions = {
+    from: 'fahadtabedge@gmail.com',
+    to: req.body.email,
+    subject: 'Wintech - Email Verification',
+    text: content
+  }
+
+  sendMail(mailOptions)
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Email verification code resend successfull'
+  })
+}
+
 module.exports = {
   userLogin,
-  userEmailVerify
+  userEmailVerify,
+  sendOTP,
+  resendEmailVerificationLink,
 }

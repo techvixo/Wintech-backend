@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
     },
     userName: {
       type: String,
-      unique: [true, 'Username already exist!'],
+      unique: [true, 'Username already exists!'],
       required: [true, 'Username is required!'],
       match: /^[a-zA-Z0-9]+$/,
       minlength: [1, 'Username must be at least 1 character.'],
@@ -33,9 +33,7 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       validate: {
-        validator: function (value) {
-          return validator.isEmail(value)
-        },
+        validator: (value) => validator.isEmail(value),
         message: (props) => `${props.value} is not a valid email!`
       }
     },
@@ -48,7 +46,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       trim: true,
-      minLength: [8, 'Password must be at least 8 character'],
+      minlength: [8, 'Password must be at least 8 characters'],
       required: [true, 'Password is required!']
     },
     isEmailVerified: {
@@ -58,14 +56,27 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: ['admin', 'user'],
-      default: 'admin'
+      required: true
     },
     status: {
       type: String,
       enum: ['active', 'blocked', 'disabled'],
       default: 'active'
     },
-    image: String
+    image: {
+      type: String,
+      default: ''
+    },
+    verification: {
+      code: {
+        type: String,
+        default: null
+      },
+      expireDate: {
+        type: Date,
+        default: null
+      }
+    }
   },
   {
     timestamps: true
@@ -73,18 +84,26 @@ const userSchema = new mongoose.Schema(
 )
 
 userSchema.pre('save', function (next) {
-  const bcryptHashRegex = /^\$2[aby]\$\d{1,2}\$[./A-Za-z0-9]{53}$/
-  if (!bcryptHashRegex.test(this.password)) {
-    const saltRounds = 10
-    this.password = bcrypt.hashSync(this.password, saltRounds)
+  if (this.isModified('password')) {
+    const saltRounds = 10;
+    this.password = bcrypt.hashSync(this.password, saltRounds);
   }
 
-  next()
-})
+  if (this.isModified('verification.code') && this.verification.code) {
+    console.log("hello")
+    const saltRounds = 10;
+    this.verification.code = bcrypt.hashSync(this.verification.code, saltRounds);
+  }
+
+  next();
+});
 
 userSchema.methods.comparePassword = function (userPlanePassword) {
-  const isMatch = bcrypt.compareSync(userPlanePassword, this.password)
-  return isMatch
+  return bcrypt.compareSync(userPlanePassword, this.password)
+}
+
+userSchema.methods.compareVerificationCode = function (userPlaneCode) {
+  return bcrypt.compareSync(userPlaneCode, this.verification.code)
 }
 
 const User = mongoose.model('user', userSchema)
