@@ -7,7 +7,7 @@ const createUser = async(data) => {
 
 // service for get specific user
 const getSpecificUser = async(id) => {
-    return await User.findOne({_id: id})
+    return await User.findOne({_id: id}).select("-password")
 }
 
 // service for update specific user

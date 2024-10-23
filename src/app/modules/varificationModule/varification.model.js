@@ -8,7 +8,7 @@ const verificationSchema = new mongoose.Schema({
         unique: true,
     },
     code: {
-        type: Number,
+        type: String,
         required: true,
         unique: true,
     },
@@ -32,14 +32,14 @@ verificationSchema.pre('save', function (next) {
     }
     if (this.isModified('code')) {
         const saltRounds = 10
-        this.password = bcrypt.hashSync(toString(this.code), saltRounds)
+        this.code = bcrypt.hashSync(this.code, saltRounds)
     }
     
     next()
 })
 
 verificationSchema.methods.compareCode = function (userPlaneCode) {
-    const isMatch = bcrypt.compareSync(userPlaneCode, toString(this.code))
+    const isMatch = bcrypt.compareSync(userPlaneCode, this.code)
     return isMatch
 }
 

@@ -20,8 +20,17 @@ const createUserZodSchema = z.object({
   })
 })
 
+const getSpecificUserZodSchema = z.object({
+  params: z.object({
+    id: z.string({
+      required_error: "id is missing in request params!"
+    })
+  })
+})
+
 const UserValidationZodSchema = {
   createUserZodSchema,
+  getSpecificUserZodSchema,
 }
 
 module.exports = UserValidationZodSchema
