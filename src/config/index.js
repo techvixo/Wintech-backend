@@ -12,5 +12,6 @@ module.exports = {
   jwt_access_token_expiresin: process.env.JWT_ACCESS_TOKEN_EXPIRESIN,
   jwt_refresh_token_secret: process.env.JWT_REFRESH_TOKEN_SECRET,
   jwt_refresh_token_expiresin: process.env.JWT_REFRESH_TOKEN_EXPIRESIN,
+  admin_dashboard_url: process.env.ADMIN_DASHBOARD_URL,
 
 }

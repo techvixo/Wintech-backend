@@ -30,6 +30,7 @@ const createUser = async(req, res) => {
         expireDate,
         type: "email-verification",
     }
+    console.log(verificationPayload)
     await createVerification(verificationPayload)
 
     const {password, ...userInfoAcceptPass} = user.toObject();

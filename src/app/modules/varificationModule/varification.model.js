@@ -38,9 +38,15 @@ verificationSchema.pre('save', function (next) {
     next()
 })
 
-verificationSchema.methods.compareCode = function (userPlaneCode) {
-    const isMatch = bcrypt.compareSync(userPlaneCode, this.code)
-    return isMatch
+verificationSchema.statics.compareCode = async function (userPlaneCode) {
+    const verifications = await this.find({}); 
+
+    for (let verification of verifications) {
+        const isMatch = bcrypt.compareSync(userPlaneCode, verification.code);
+        if (isMatch) {
+            return verification;
+        }
+    }
 }
 
 const Verification = mongoose.model("verification", verificationSchema)
