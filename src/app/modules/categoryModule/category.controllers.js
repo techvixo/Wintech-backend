@@ -1,5 +1,6 @@
 const sendResponse = require('../../../shared/sendResponse');
 const fileUploader = require('../../../utils/fileUploader');
+const IdGenerator = require('../../../utils/idGenerator');
 const CustomError = require('../../errors');
 const categoryServices = require('./category.services');
 const { StatusCodes } = require('http-status-codes');
@@ -7,6 +8,9 @@ const { StatusCodes } = require('http-status-codes');
 // Controller for creating a new category
 const createCategory = async (req, res) => {
   const categoryData = req.body;
+  const categoryId = IdGenerator.generateId()
+
+  categoryData.categoryId = categoryId
 
   const categoryImagePath = await fileUploader(req.files, `category-image-${categoryData.title}`, "image");
   categoryData.image = categoryImagePath;
@@ -76,7 +80,6 @@ const updateSpecificCategory = async (req, res) => {
     statusCode: StatusCodes.OK,
     status: 'success',
     message: 'Category updated successful',
-    data: category,
   });
 };
 
