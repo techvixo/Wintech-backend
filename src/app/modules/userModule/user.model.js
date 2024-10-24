@@ -90,7 +90,6 @@ userSchema.pre('save', function (next) {
   }
 
   if (this.isModified('verification.code') && this.verification.code) {
-    console.log("hello")
     const saltRounds = 10;
     this.verification.code = bcrypt.hashSync(this.verification.code, saltRounds);
   }

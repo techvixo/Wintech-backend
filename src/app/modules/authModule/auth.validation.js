@@ -11,8 +11,25 @@ const loginValidationZodSchema = z.object({
   })
 })
 
+const changePasswordZodSchema = z.object({
+  params: z.object({
+    id: z.string({
+      required_error: "id is missing in request params!"
+    })
+  }),
+  body: z.object({
+    oldPassword: z.string({
+      required_error: "Old password is required!"
+    }),
+    newPassword: z.string({
+      required_error: "New password is required!"
+    })
+  })
+})
+
 const AuthValidation = {
-  loginValidationZodSchema
+  loginValidationZodSchema,
+  changePasswordZodSchema
 }
 
 module.exports = AuthValidation

@@ -4,7 +4,6 @@ const loginHistorySchema = new mongoose.Schema({
     userId: {
         type: Number,
         required: true,
-        unique: true,
     },
     ipAddress: String,
     userAgent: String

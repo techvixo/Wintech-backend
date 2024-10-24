@@ -72,6 +72,45 @@ const userLogin = async (req, res) => {
   })
 }
 
+// controller for resend email verification link
+const resendEmailVerificationLink = async (req, res) => {
+  const { email } = req.body
+  const code = IdGenerator.generateCode()
+  const expireDate = new Date()
+  expireDate.setMinutes(expireDate.getMinutes() + 5)
+  const verification = {
+    code: code,
+    expireDate
+  }
+
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new CustomError.BadRequestError('No user found!')
+  }
+
+  user.verification = verification
+  await user.save()
+
+  // send email verification mail
+  // const content = `Your veirfication code is ${req.body?.emailVerification?.code}`
+  const verificationLink = `${config.server_base_url}/v1/auth/verify-email/${user._id}?userCode=${verification.code}`
+  const content = `Click the following link to verify your email: ${verificationLink}`
+  const mailOptions = {
+    from: 'fahadtabedge@gmail.com',
+    to: req.body.email,
+    subject: 'Wintech - Email Verification',
+    text: content
+  }
+
+  sendMail(mailOptions)
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Email verification code resend successfull'
+  })
+}
+
 // controller for verify email
 const userEmailVerify = async (req, res) => {
   const { userCode } = req.query
@@ -238,47 +277,97 @@ const sendOTP = async (req, res) => {
   })
 }
 
-const resendEmailVerificationLink = async (req, res) => {
-  const { email } = req.body
-  const code = IdGenerator.generateCode()
-  const expireDate = new Date()
-  expireDate.setMinutes(expireDate.getMinutes() + 5)
-  const verification = {
-    code: code,
-    expireDate
+// controller for verify otp
+const verifyOTP = async(req, res) => {
+  const userId = req.params.id;
+  const userOTP = req.body.otp;
+  if(!userId){
+    throw new CustomError.BadRequestError("Missing user id in request params!")
+  }
+  if(!userOTP){
+    throw new CustomError.BadRequestError("Missing OTP in request body!")
   }
 
-  const user = await User.findOne({ email })
-  if (!user) {
-    throw new CustomError.BadRequestError('No user found!')
+  const user = await userServices.getSpecificUser(userId)
+  if(!user){
+    throw new CustomError.BadRequestError("User not found!")
   }
 
-  user.verification = verification
-  await user.save()
-
-  // send email verification mail
-  // const content = `Your veirfication code is ${req.body?.emailVerification?.code}`
-  const verificationLink = `${config.server_base_url}/v1/auth/verify-email/${user._id}?userCode=${verification.code}`
-  const content = `Click the following link to verify your email: ${verificationLink}`
-  const mailOptions = {
-    from: 'fahadtabedge@gmail.com',
-    to: req.body.email,
-    subject: 'Wintech - Email Verification',
-    text: content
+  const isMatchOTP = await user.compareVerificationCode(userOTP)
+  if(!isMatchOTP){
+    throw new CustomError.BadRequestError("Invalid OTP!")
   }
 
-  sendMail(mailOptions)
+   // set null verification object in user model
+   await User.findByIdAndUpdate(user._id, {
+    verification: { code: null, expireDate: null }
+  })
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
-    status: 'success',
-    message: 'Email verification code resend successfull'
+    status: "success",
+    message: "OTP match successfull"
+  })
+}
+
+// controller for reset password
+const resetPassword = async(req, res) => {
+  const userId = req.params.id;
+  const newPassword = req.body.newPassword
+  if(!userId){
+    throw new CustomError.BadRequestError("Missing user id in request params!")
+  }
+  if(!newPassword){
+    throw new CustomError.BadRequestError("Missing new password in request body!")
+  }
+
+  const user = await userServices.getSpecificUser(userId)
+  if(!user){
+    throw new CustomError.BadRequestError("User not found!")
+  }
+
+  user.password = newPassword;
+  await user.save()
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: "success",
+    message: "Password reset successfull"
+  })
+}
+
+// controller for change password
+const changePassword = async(req, res) => {
+  const userId = req.params.id;
+  const {oldPassword, newPassword} = req.body
+
+  const user = await User.findById(userId);
+  if(!user){
+    throw new CustomError.BadRequestError("User not found!")
+  }
+
+   // compare user given old password and database saved password
+   const isOldPassMatch = await user.comparePassword(oldPassword)
+   if (!isOldPassMatch) {
+       throw new CustomError.BadRequestError('Wrong password')
+   }
+
+   user.password = newPassword
+   await user.save()
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: "success",
+    message: "Password change successfull"
   })
 }
 
 module.exports = {
   userLogin,
+  resendEmailVerificationLink,
   userEmailVerify,
   sendOTP,
-  resendEmailVerificationLink,
+  verifyOTP,
+  resetPassword,
+  changePassword,
 }
