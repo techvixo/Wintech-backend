@@ -23,7 +23,8 @@ const productSchema = new mongoose.Schema(
     },
     images: [String],
     configurations: {
-        default: null
+        type: mongoose.Schema.Types.Mixed, 
+        default: {} 
     },
     category: {
         categoryId: String,

@@ -12,8 +12,14 @@ const createProduct = async (req, res) => {
   
   productData.productId = productId;
 
+  const configurations = typeof req.body.configurations === 'string'
+  ? JSON.parse(req.body.configurations)
+  : req.body.configurations;
+  
+  productData.configurations = configurations
+
   // Upload images if any
-  const productImages = await fileUploader(req.files, `product-images-${productData.title}`, "images");
+  const productImages = await fileUploader(req.files, `product-image-${productData.title}`, "images");
   productData.images = productImages;
 
   const product = await productServices.createProduct(productData);
@@ -66,9 +72,15 @@ const updateSpecificProduct = async (req, res) => {
   const { id } = req.params;
   const updateData = req.body;
 
+  const configurations = typeof req.body.configurations === 'string'
+  ? JSON.parse(req.body.configurations)
+  : req.body.configurations;
+  
+  updateData.configurations = configurations
+
   // If there are new images to upload
   if (req.files && req.files.length > 0) {
-    const productImages = await fileUploader(req.files, `product-images-${updateData.title}`, "images");
+    const productImages = await fileUploader(req.files, `product-image-${updateData.title}`, "images");
     updateData.images = productImages;
   }
 
