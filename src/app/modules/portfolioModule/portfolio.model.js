@@ -17,7 +17,7 @@ const portfolioSchema = new mongoose.Schema(
     addedBy: {
         adminId: String,
         name: String,
-        email: String,
+        email: String
     }
   },
   {
