@@ -8,11 +8,16 @@ const categorySchema = new mongoose.Schema(
     trim: true,
     required: true
    },
-   name: {
+   name_en: {
     type: String,
     required: true,
    },
-   description: String,
+   name_cn: {
+    type: String,
+    required: true,
+   },
+   description_en: String,
+   description_cn: String,
    status: {
     type: String,
     enum: ['active', "disable"],
@@ -22,8 +27,10 @@ const categorySchema = new mongoose.Schema(
    products: [
     {
         productId: String,
-        title: String,
-        subTitle: String,
+        title_en: String,
+        title_cn: String,
+        subTitle_en: String,
+        subTitle_cn: String,
     }
    ]
   },

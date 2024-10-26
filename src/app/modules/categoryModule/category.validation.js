@@ -2,11 +2,17 @@ const z = require('zod')
 
 const createCategoryZodSchema = z.object({
   body: z.object({
-    name: z.string({
-      required_error: 'Name is required!'
+    name_en: z.string({
+      required_error: 'name_en is required!'
     }),
-    description: z.string({
-      required_error: 'Description is required!'
+    name_cn: z.string({
+      required_error: 'name_cn is required!'
+    }),
+    description_en: z.string({
+      required_error: 'description_en is required!'
+    }),
+    description_cn: z.string({
+      required_error: 'description_cn is required!'
     }),
   })
 })
