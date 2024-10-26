@@ -79,7 +79,7 @@ const updateSpecificProduct = async (req, res) => {
   updateData.configurations = configurations
 
   // If there are new images to upload
-  if (req.files && req.files.length > 0) {
+  if (req.files || req.files.length > 0) {
     const productImages = await fileUploader(req.files, `product-image-${updateData.title}`, "images");
     updateData.images = productImages;
   }

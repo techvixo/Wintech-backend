@@ -66,7 +66,7 @@ const updateSpecificCategory = async (req, res) => {
   const updateData = req.body;
 
   // If there's a new image to upload
-  if (req.files && req.files.length > 0) {
+  if (req.files || req.files.length > 0) {
     const categoryImagePath = await fileUploader(req.files, `category-image-${updateData.title}`, "image");
     updateData.image = categoryImagePath;
   }
