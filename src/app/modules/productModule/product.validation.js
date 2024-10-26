@@ -2,11 +2,17 @@ const z = require('zod')
 
 const createProductZodSchema = z.object({
   body: z.object({
-    title: z.string({
-      required_error: 'Product title is required!'
+    title_en: z.string({
+      required_error: 'Product english title is required!'
     }),
-    subTitle: z.string({
-      required_error: 'Product sub title is required!'
+    title_cn: z.string({
+      required_error: 'Product chinese title is required!'
+    }),
+    subTitle_en: z.string({
+      required_error: 'Product english sub title is required!'
+    }),
+    subTitle_cn: z.string({
+      required_error: 'Product chinese sub title is required!'
     }),
     category: z.object({
         categoryId: z.string().optional(),
@@ -17,8 +23,11 @@ const createProductZodSchema = z.object({
         name: z.string().optional(),
         email: z.string().optional()
       }).optional(),
-    description: z.string({
-      required_error: 'Product description is required!'
+    description_en: z.string({
+      required_error: 'Product description_en is required!'
+    }),
+    description_cn: z.string({
+      required_error: 'Product description_cn is required!'
     }),
   })
 })

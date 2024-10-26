@@ -8,14 +8,24 @@ const productSchema = new mongoose.Schema(
         trim: true,
         unique: true,
     },
-    title: {
+    title_en: {
         type: String,
         required: true,
     },
-    subTitle: {
+    title_cn: {
         type: String,
         required: true,
     },
+    subTitle_en: {
+        type: String,
+        required: true,
+    },
+    subTitle_cn: {
+        type: String,
+        required: true,
+    },
+    descritpion_en: String,
+    descritpion_cn: String,
     status: {
         type: String,
         enum: ["active", "disable"],
@@ -28,11 +38,13 @@ const productSchema = new mongoose.Schema(
     },
     category: {
         categoryId: String,
-        title: String,
+        title_en: String,
+        title_cn: String,
     },
     createdBy: {
         adminId: String,
-        name: String,
+        name_en: String,
+        name_cn: String,
         email: String
     }
   },
