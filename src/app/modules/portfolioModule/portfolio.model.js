@@ -2,11 +2,16 @@ const mongoose = require('mongoose')
 
 const portfolioSchema = new mongoose.Schema(
   {
-    name: {
+    name_en: {
         type: String,
         required: true,
     },
-    description: String,
+    name_cn: {
+        type: String,
+        required: true,
+    },
+    description_en: String,
+    description_cn: String,
     image: String,
     url: String,
     status: {
@@ -16,7 +21,8 @@ const portfolioSchema = new mongoose.Schema(
     },
     addedBy: {
         adminId: String,
-        name: String,
+        name_en: String,
+        name_cn: String,
         email: String
     }
   },
