@@ -40,12 +40,13 @@ const ourTeamSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['active', 'disable']
+        enum: ['active', 'disable'],
+        default: "active"
     },
 }, {
     timestamps: true,
 })
 
-const OurTeam = mongoose.model('outTeam', ourTeamSchema);
+const OurTeam = mongoose.model('ourTeam', ourTeamSchema);
 
 module.exports = OurTeam
