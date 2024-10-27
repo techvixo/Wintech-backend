@@ -24,6 +24,7 @@ const mongooseSchema = new mongoose.Schema({
         name_en: String,
         name_cn: String,
         adminId: String,
+        email: String,
     },
     status: {
         type: Boolean,

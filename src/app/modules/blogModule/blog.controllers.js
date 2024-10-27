@@ -7,20 +7,15 @@ const fileUploader = require('../../../utils/fileUploader');
 // Controller for creating a new blog post
 const createBlog = async (req, res) => {
   const blogData = req.body;
-
   // Upload heading image if present
   if (req.files || req.files.heading_image) {
-    const headingImagePath = await fileUploader(req.files.heading_image, `blog-heading-${blogData.name_en}`, 'heading_image');
+    const headingImagePath = await fileUploader(req.files, `blog-heading-${blogData.name_en}`, 'heading_image');
     blogData.heading_image = headingImagePath;
   }
 
   // Upload featured images if present
   if (req.files || req.files.featured_images) {
-    const featuredImagePaths = await Promise.all(
-      req.files.featured_images.map((file, index) => 
-        fileUploader(file, `blog-featured-${blogData.name_en}-${index + 1}`, 'featured_images')
-      )
-    );
+    const featuredImagePaths = await fileUploader(req.files, `blog-featured-${blogData.name_en}`, 'featured_images')
     blogData.featured_images = featuredImagePaths;
   }
 
@@ -76,17 +71,14 @@ const updateSpecificBlog = async (req, res) => {
 
   // Update heading image if present
   if (req.files || req.files.heading_image) {
-    const headingImagePath = await fileUploader(req.files.heading_image, `blog-heading-${updateData.name_en}`, 'heading_image');
+    const headingImagePath = await fileUploader(req.files, `blog-heading-${updateData.name_en}`, 'heading_image');
     updateData.heading_image = headingImagePath;
   }
 
   // Update featured images if present
   if (req.files || req.files.featured_images) {
-    const featuredImagePaths = await Promise.all(
-      req.files.featured_images.map((file, index) => 
-        fileUploader(file, `blog-featured-${updateData.name_en}-${index + 1}`, 'featured_images')
-      )
-    );
+    const featuredImagePaths = await fileUploader(req.files, `blog-featured-${updateData.name_en}`, 'featured_images')
+
     updateData.featured_images = featuredImagePaths;
   }
 

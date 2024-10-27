@@ -3,10 +3,10 @@ const z = require('zod')
 const createPartnerZodSchema = z.object({
   body: z.object({
     name_en: z.string({
-      required_error: 'Portfolio english name is required!'
+      required_error: 'Partner english name is required!'
     }),
     name_cn: z.string({
-      required_error: 'Portfolio chinese name is required!'
+      required_error: 'Partner chinese name is required!'
     }),
   })
 })

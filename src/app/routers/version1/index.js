@@ -7,6 +7,7 @@ const portfolioRouter = require('../../modules/portfolioModule/portfolio.routes'
 const ourTeamRouter = require('../../modules/ourTeamModule/ourTeam.routes')
 const certificateRouter = require('../../modules/certificateModule/certificate.routes')
 const partnerRouter = require('../../modules/partnerModule/partner.routes')
+const blogRouter = require('../../modules/blogModule/blog.routes')
 
 const router = express.Router()
 
@@ -18,5 +19,6 @@ router.use('/portfolio', portfolioRouter)
 router.use('/our-team', ourTeamRouter)
 router.use('/certificate', certificateRouter)
 router.use('/partner', partnerRouter)
+router.use('/blog', blogRouter)
 
 module.exports = router
