@@ -6,6 +6,7 @@ const productRouter = require('../../modules/productModule/product.routes')
 const portfolioRouter = require('../../modules/portfolioModule/portfolio.routes')
 const ourTeamRouter = require('../../modules/ourTeamModule/ourTeam.routes')
 const certificateRouter = require('../../modules/certificateModule/certificate.routes')
+const partnerRouter = require('../../modules/partnerModule/partner.routes')
 
 const router = express.Router()
 
@@ -16,5 +17,6 @@ router.use('/product', productRouter)
 router.use('/portfolio', portfolioRouter)
 router.use('/our-team', ourTeamRouter)
 router.use('/certificate', certificateRouter)
+router.use('/partner', partnerRouter)
 
 module.exports = router
