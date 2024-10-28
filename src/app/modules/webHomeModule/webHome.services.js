@@ -1,8 +1,11 @@
 const WebHome = require('./webHome.model');
 
 // General Service for initializing WebHome if not created
-const initializeWebHome = async (data) => {
-  const webHome = await WebHome.create(data);
+const initializeWebHome = async () => {
+  let webHome = await WebHome.findOne();
+  if (!webHome) {
+    webHome = await WebHome.create({});
+  }
   return webHome;
 };
 
@@ -11,31 +14,70 @@ const getWebHome = async () => {
   return await WebHome.findOne();
 };
 
-// Service to update featured_video
-const updateFeaturedVideo = async (data) => {
-  return await WebHome.findOneAndUpdate({}, { featured_video: data }, { new: true, runValidators: true });
+// Service to create featured_video
+const createFeaturedVideo = async (left_side_video_url, right_side_video_url) => {
+  const webHome = await initializeWebHome(); 
+  const featured_video = {
+    left_side_video: left_side_video_url,
+    right_side_video: right_side_video_url
+  }
+  webHome.featured_video = featured_video
+  await webHome.save();
+  return webHome;
 };
 
-// Service to update custom_parts_video
-const updateCustomPartsVideo = async (videoUrl) => {
-  return await WebHome.findOneAndUpdate({}, { custom_parts_video: videoUrl }, { new: true });
+// Service to delete featured_video
+const deleteFeaturedVideo = async (side) => {
+  const webHome = await initializeWebHome(); 
+  if(side === 'left_side'){
+    webHome.featured_video.left_side_video = null
+  }
+  if(side === 'right_side'){
+    webHome.featured_video.right_side_video = null
+  }
+  await webHome.save();
+  return webHome;
+};
+
+// Service to create featured_video
+const createCustomPartsVideo = async (video_url) => {
+  const webHome = await initializeWebHome(); 
+  webHome.custom_parts_video = video_url
+  await webHome.save();
+  return webHome;
+};
+
+// Service to delete featured_video
+const deleteCustomPartsVideo = async () => {
+  const webHome = await initializeWebHome(); 
+  webHome.custom_parts_video = null
+  await webHome.save();
+  return webHome;
 };
 
 // Service to add a new item to cnc_machine_part array
 const addCncMachinePart = async (partData) => {
-  return await WebHome.findOneAndUpdate({}, { $push: { cnc_machine_part: partData } }, { new: true });
+  const webHome = await initializeWebHome(); 
+  webHome.cnc_machine_parts.push(partData)
+  await webHome.save()
+  return webHome;
 };
 
 // Service to delete an item from cnc_machine_part array by part ID
 const deleteCncMachinePart = async (partId) => {
-  return await WebHome.findOneAndUpdate({}, { $pull: { cnc_machine_part: { _id: partId } } }, { new: true });
+  const webHome = await initializeWebHome(); 
+  webHome.cnc_machine_parts = webHome.cnc_machine_parts.filter(part => !part._id.equals(partId))
+  await webHome.save();
+  return webHome;
 };
 
 module.exports = {
   initializeWebHome,
   getWebHome,
-  updateFeaturedVideo,
-  updateCustomPartsVideo,
+  createFeaturedVideo,
+  deleteFeaturedVideo,
+  createCustomPartsVideo,
+  deleteCustomPartsVideo,
   addCncMachinePart,
   deleteCncMachinePart,
 };
