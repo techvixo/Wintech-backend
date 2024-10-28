@@ -4,7 +4,10 @@ const mongoose = require('mongoose')
 const bannerSchema = new mongoose.Schema({
     purpose: {
         type: String,
-        required: true,
+        enum: {
+            values: ['home', 'about_us', 'portfolio', 'portfolio_single', 'blog', 'blog_single', 'contact_us', 'services', 'cnc_services', 'cnc_services_details', 'material_machine_services', 'material_machine_services_details', 'surface_finishing_service', 'surface_finishing_services_details'],
+            message: '{VALUE} not accepted as purpose. Please use one of the following: home, about_us, portfolio, portfolio_single, blog, blog_single, contact_us, services, cnc_services, cnc_services_details, material_machine_services, material_machine_services_details, surface_finishing_service, surface_finishing_services_details. '
+        }
     },
     title_en: {
         type: String,

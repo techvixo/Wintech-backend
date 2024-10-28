@@ -12,17 +12,17 @@ const getAllBanners = async () => {
 
 // Service to get a specific banner by ID
 const getSpecificBanner = async (id) => {
-  return await Banner.findOne({ _id: id });
+  return await Banner.findOne({ purpose: id });
 };
 
 // Service to update a specific banner
 const updateSpecificBanner = async (id, data) => {
-  return await Banner.updateOne({ _id: id }, data, { runValidators: true });
+  return await Banner.updateOne({ purpose: id }, data, { runValidators: true });
 };
 
 // Service to delete a specific banner
 const deleteSpecificBanner = async (id) => {
-  return await Banner.deleteOne({ _id: id });
+  return await Banner.deleteOne({ purpose: id });
 };
 
 module.exports = {
