@@ -2,6 +2,7 @@ const express = require('express')
 const authControllers = require('./auth.controllers')
 const requestValidator = require('../../middlewares/requestValidator')
 const AuthValidation = require('./auth.validation')
+const authorization = require('../../middlewares/authorization')
 
 const authRoute = express.Router()
 
@@ -13,7 +14,7 @@ authRoute.post(
 )
 
 // route for resend email verification link
-authRoute.post('/email-verification/resend-code', authControllers.resendEmailVerificationLink)
+authRoute.post('/email-verification/resend-code', authorization('admin'), authControllers.resendEmailVerificationLink)
 
 // route for user email verify
 authRoute.get(
@@ -31,7 +32,7 @@ authRoute.post('/verify-otp/:id', authControllers.verifyOTP)
 authRoute.post('/reset-password/:id', authControllers.resetPassword)
 
 // route for change password
-authRoute.post('/change-password/:id', requestValidator(AuthValidation.changePasswordZodSchema), authControllers.changePassword)
+authRoute.post('/change-password/:id', authorization('admin'), requestValidator(AuthValidation.changePasswordZodSchema), authControllers.changePassword)
 
 
 module.exports = authRoute

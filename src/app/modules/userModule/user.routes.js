@@ -2,8 +2,11 @@ const express = require('express')
 const requestValidator = require('../../middlewares/requestValidator')
 const UserValidationZodSchema = require('./user.validation')
 const userControllers = require('./user.controllers')
+const authorization = require('../../middlewares/authorization')
 
 const userRouter = express.Router()
+
+userRouter.use(authorization('admin'))
 
 // create user
 userRouter.post(
