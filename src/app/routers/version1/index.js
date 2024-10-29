@@ -10,6 +10,7 @@ const partnerRouter = require('../../modules/partnerModule/partner.routes')
 const blogRouter = require('../../modules/blogModule/blog.routes')
 const bannerRouter = require('../../modules/bannerModule/banner.routes')
 const webHomeRouter = require('../../modules/webHomeModule/webHome.routes')
+const messageRouter = require('../../modules/messageModule/message.routes')
 
 const router = express.Router()
 
@@ -24,5 +25,6 @@ router.use('/partner', partnerRouter)
 router.use('/blog', blogRouter)
 router.use('/web-banner', bannerRouter)
 router.use('/web-home', webHomeRouter)
+router.use('/message', messageRouter)
 
 module.exports = router
