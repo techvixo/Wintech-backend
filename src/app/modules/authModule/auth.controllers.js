@@ -278,87 +278,137 @@ const sendOTP = async (req, res) => {
 }
 
 // controller for verify otp
-const verifyOTP = async(req, res) => {
-  const userId = req.params.id;
-  const userOTP = req.body.otp;
-  if(!userId){
-    throw new CustomError.BadRequestError("Missing user id in request params!")
+const verifyOTP = async (req, res) => {
+  const userId = req.params.id
+  const userOTP = req.body.otp
+  if (!userId) {
+    throw new CustomError.BadRequestError('Missing user id in request params!')
   }
-  if(!userOTP){
-    throw new CustomError.BadRequestError("Missing OTP in request body!")
+  if (!userOTP) {
+    throw new CustomError.BadRequestError('Missing OTP in request body!')
   }
 
   const user = await userServices.getSpecificUser(userId)
-  if(!user){
-    throw new CustomError.BadRequestError("User not found!")
+  if (!user) {
+    throw new CustomError.BadRequestError('User not found!')
   }
 
   const isMatchOTP = await user.compareVerificationCode(userOTP)
-  if(!isMatchOTP){
-    throw new CustomError.BadRequestError("Invalid OTP!")
+  if (!isMatchOTP) {
+    throw new CustomError.BadRequestError('Invalid OTP!')
   }
 
-   // set null verification object in user model
-   await User.findByIdAndUpdate(user._id, {
+  // set null verification object in user model
+  await User.findByIdAndUpdate(user._id, {
     verification: { code: null, expireDate: null }
   })
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
-    status: "success",
-    message: "OTP match successfull"
+    status: 'success',
+    message: 'OTP match successfull'
   })
 }
 
 // controller for reset password
-const resetPassword = async(req, res) => {
-  const userId = req.params.id;
+const resetPassword = async (req, res) => {
+  const userId = req.params.id
   const newPassword = req.body.newPassword
-  if(!userId){
-    throw new CustomError.BadRequestError("Missing user id in request params!")
+  if (!userId) {
+    throw new CustomError.BadRequestError('Missing user id in request params!')
   }
-  if(!newPassword){
-    throw new CustomError.BadRequestError("Missing new password in request body!")
+  if (!newPassword) {
+    throw new CustomError.BadRequestError(
+      'Missing new password in request body!'
+    )
   }
 
   const user = await userServices.getSpecificUser(userId)
-  if(!user){
-    throw new CustomError.BadRequestError("User not found!")
+  if (!user) {
+    throw new CustomError.BadRequestError('User not found!')
   }
 
-  user.password = newPassword;
+  user.password = newPassword
   await user.save()
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
-    status: "success",
-    message: "Password reset successfull"
+    status: 'success',
+    message: 'Password reset successfull'
   })
 }
 
 // controller for change password
-const changePassword = async(req, res) => {
-  const userId = req.params.id;
-  const {oldPassword, newPassword} = req.body
+const changePassword = async (req, res) => {
+  const userId = req.params.id
+  const { oldPassword, newPassword } = req.body
 
-  const user = await User.findById(userId);
-  if(!user){
-    throw new CustomError.BadRequestError("User not found!")
+  const user = await User.findById(userId)
+  if (!user) {
+    throw new CustomError.BadRequestError('User not found!')
   }
 
-   // compare user given old password and database saved password
-   const isOldPassMatch = await user.comparePassword(oldPassword)
-   if (!isOldPassMatch) {
-       throw new CustomError.BadRequestError('Wrong password')
-   }
+  // compare user given old password and database saved password
+  const isOldPassMatch = await user.comparePassword(oldPassword)
+  if (!isOldPassMatch) {
+    throw new CustomError.BadRequestError('Wrong password')
+  }
 
-   user.password = newPassword
-   await user.save()
+  user.password = newPassword
+  await user.save()
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Password change successfull'
+  })
+}
+
+// controller for get access token by refresh token
+const getAccessTokenByRefreshToken = async (req, res) => {
+  const { refresh_token } = req.cookies
+  const actualRefreshToken = refresh_token.split(' ')[1]
+
+  const tokenPayload = jwtHelpers.verifyToken(
+    actualRefreshToken,
+    config.jwt_refresh_token_secret
+  )
+  if (!tokenPayload) {
+    throw new CustomError.BadRequestError('Invalid refresh token!')
+  }
+
+  const user = await authServices.getUserByEmail(tokenPayload.email)
+  if (!user) {
+    throw new CustomError.BadRequestError('User not found!')
+  }
+
+  const payload = {
+    userId: user.userId,
+    email: user.email,
+    role: user.role
+  }
+
+  const newAccessToken = jwtHelpers.createToken(
+    payload,
+    config.jwt_access_token_secret,
+    config.jwt_access_token_expiresin
+  )
+
+  // set refresh token into cookie
+  const cookieOptions = {
+    secure: config.env === 'production',
+    httpOnly: true,
+  };
+
+  res.cookie('refresh_token', actualRefreshToken, cookieOptions);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     status: "success",
-    message: "Password change successfull"
+    message: "New access token created using refresh token. User logged In successful",
+    data: {
+      accessToken: newAccessToken
+    }
   })
 }
 
@@ -370,4 +420,5 @@ module.exports = {
   verifyOTP,
   resetPassword,
   changePassword,
+  getAccessTokenByRefreshToken
 }

@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
 
 const createToken = (payload, secret, expireTime) => {
-  return jwt.sign(payload, secret, {
+  const token = jwt.sign(payload, secret, {
     expiresIn: expireTime
   })
+  return `Bearer ${token}`
 }
 
 const verifyToken = (token, secret) => {

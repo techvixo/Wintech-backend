@@ -10,6 +10,7 @@ const notFound = require('./app/middlewares/notFound')
 const Router = require('./app/routers/version1')
 const { StatusCodes } = require('http-status-codes')
 const sendResponse = require('./shared/sendResponse')
+const cookieParser = require('cookie-parser');
 
 const app = express()
 
@@ -17,6 +18,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser());
 app.use(fileUpload())
 app.use('/v1/uploads', express.static(path.join('uploads')))
 

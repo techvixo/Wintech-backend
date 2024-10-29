@@ -34,5 +34,8 @@ authRoute.post('/reset-password/:id', authControllers.resetPassword)
 // route for change password
 authRoute.post('/change-password/:id', authorization('admin'), requestValidator(AuthValidation.changePasswordZodSchema), authControllers.changePassword)
 
+// route for user stability
+authRoute.post('/refresh-token',  authControllers.getAccessTokenByRefreshToken)
+
 
 module.exports = authRoute
