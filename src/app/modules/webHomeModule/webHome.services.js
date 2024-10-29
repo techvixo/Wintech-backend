@@ -17,10 +17,16 @@ const getWebHome = async () => {
 // Service to create featured_video
 const createFeaturedVideo = async (left_side_video_url, right_side_video_url) => {
   const webHome = await initializeWebHome(); 
-  const featured_video = {
-    left_side_video: left_side_video_url,
-    right_side_video: right_side_video_url
+  const featured_video = {...webHome.featured_video};
+  if(left_side_video_url && right_side_video_url){
+    featured_video.left_side_video = left_side_video_url
+    featured_video.right_side_video = right_side_video_url
+  }else if(left_side_video_url){
+    featured_video.left_side_video = left_side_video_url
+  }else if(right_side_video_url){
+    featured_video.right_side_video = right_side_video_url
   }
+
   webHome.featured_video = featured_video
   await webHome.save();
   return webHome;
@@ -31,10 +37,13 @@ const deleteFeaturedVideo = async (side) => {
   const webHome = await initializeWebHome(); 
   if(side === 'left_side'){
     webHome.featured_video.left_side_video = null
-  }
-  if(side === 'right_side'){
+  }else if(side === 'right_side'){
+    webHome.featured_video.right_side_video = null
+  }else{
+    webHome.featured_video.left_side_video = null
     webHome.featured_video.right_side_video = null
   }
+
   await webHome.save();
   return webHome;
 };
