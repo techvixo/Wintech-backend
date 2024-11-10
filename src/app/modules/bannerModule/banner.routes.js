@@ -8,7 +8,7 @@ const bannerRouter = express.Router();
 
 bannerRouter.post(
     '/create',
-    authorization('admin'),
+    // authorization('admin'),
     requestValidator(BannerValidationZodSchema.createBannerZodSchema),
     bannerControllers.createBanner
   )

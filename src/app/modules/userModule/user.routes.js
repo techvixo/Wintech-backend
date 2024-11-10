@@ -6,7 +6,7 @@ const authorization = require('../../middlewares/authorization')
 
 const userRouter = express.Router()
 
-userRouter.use(authorization('admin'))
+// userRouter.use(authorization('admin'))
 
 // create user
 userRouter.post(
