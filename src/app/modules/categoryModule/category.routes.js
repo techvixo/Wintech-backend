@@ -20,13 +20,13 @@ categoryRouter.get(
 )
 categoryRouter.patch(
   '/update/:id',
-  authorization('admin'),
+  // authorization('admin'),
   requestValidator(CategoryValidationZodSchema.specificCategoryZodSchema),
   categoryControllers.updateSpecificCategory
 )
 categoryRouter.delete(
   '/delete/:id',
-  authorization('admin'),
+  // authorization('admin'),
   requestValidator(CategoryValidationZodSchema.specificCategoryZodSchema),
   categoryControllers.deleteSpecificCategory
 )

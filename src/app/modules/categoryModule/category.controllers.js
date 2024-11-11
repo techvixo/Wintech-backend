@@ -12,8 +12,10 @@ const createCategory = async (req, res) => {
 
   categoryData.categoryId = categoryId
 
-  const categoryImagePath = await fileUploader(req.files, `category-image-${categoryData.title}`, "image");
+  if(req.files){
+    const categoryImagePath = await fileUploader(req.files, `category-image-${categoryData.title}`, "image");
   categoryData.image = categoryImagePath;
+  }
 
   const category = await categoryServices.createCategory(categoryData);
   if (!category) {
@@ -66,7 +68,7 @@ const updateSpecificCategory = async (req, res) => {
   const updateData = req.body;
 
   // If there's a new image to upload
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const categoryImagePath = await fileUploader(req.files, `category-image-${updateData.title}`, "image");
     updateData.image = categoryImagePath;
   }
