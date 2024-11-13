@@ -2,13 +2,13 @@ const express = require('express');
 const productControllers = require('./product.controllers');
 const requestValidator = require('../../middlewares/requestValidator');
 const ProductValidationZodSchema = require('./product.validation');
-const authorization = require('../../middlewares/authorization');
+// const authorization = require('../../middlewares/authorization');
 
 const productRouter = express.Router();
 
 productRouter.post(
     '/create',
-    authorization('admin'),
+    // authorization('admin'),
     requestValidator(ProductValidationZodSchema.createProductZodSchema),
     productControllers.createProduct
   )
@@ -20,13 +20,13 @@ productRouter.post(
   )
   productRouter.patch(
     '/update/:id',
-    authorization('admin'),
+    // authorization('admin'),
     requestValidator(ProductValidationZodSchema.specificProductZodSchema),
     productControllers.updateSpecificProduct
   )
   productRouter.delete(
     '/delete/:id',
-    authorization('admin'),
+    // authorization('admin'),
     requestValidator(ProductValidationZodSchema.specificProductZodSchema),
     productControllers.deleteSpecificProduct
   )

@@ -48,7 +48,9 @@ const userLogin = async (req, res) => {
     email: user.email,
     phone: user.phone,
     _id: user._id,
-    accessToken
+    isEmailVerified: user.isEmailVerified,
+    accessToken: accessToken.split(' ')[1],
+    refreshToken
   }
 
   // create a login history
@@ -92,11 +94,11 @@ const resendEmailVerificationLink = async (req, res) => {
   await user.save()
 
   // send email verification mail
-  // const content = `Your veirfication code is ${req.body?.emailVerification?.code}`
-  const verificationLink = `${config.server_base_url}/v1/auth/verify-email/${user._id}?userCode=${verification.code}`
-  const content = `Click the following link to verify your email: ${verificationLink}`
+  const content = `Your veirfication code is ${verification.code}`
+  // const verificationLink = `${config.server_base_url}/v1/auth/verify-email/${user._id}?userCode=${verification.code}`
+  // const content = `Click the following link to verify your email: ${verificationLink}`
   const mailOptions = {
-    from: 'fahadtabedge@gmail.com',
+    from: 'nafei.wintecmachining@gmail.com',
     to: req.body.email,
     subject: 'Wintech - Email Verification',
     text: content
