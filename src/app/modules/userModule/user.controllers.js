@@ -34,7 +34,7 @@ const createUser = async(req, res) => {
     const {password, ...userInfoAcceptPass} = user.toObject();
 
     // send email verification mail
-    const content = `Your veirfication code is ${userData.verification.code}`
+    const content = `Your veirfication code is ${userData?.verification?.code}`
     // const verificationLink = `${server_base_url}/v1/auth/verify-email/${user._id}?userCode=${userData.verification.code}`
     // const content = `Click the following link to verify your email: ${verificationLink}`
     const mailOptions = {

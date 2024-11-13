@@ -48,9 +48,9 @@ const userLogin = async (req, res) => {
     email: user.email,
     phone: user.phone,
     _id: user._id,
-    isEmailVerified: user.isEmailVerified,
-    accessToken: accessToken.split(' ')[1],
-    refreshToken
+    accessToken,
+    refreshToken,
+    isVerified: user.isEmailVerified
   }
 
   // create a login history
@@ -94,7 +94,7 @@ const resendEmailVerificationLink = async (req, res) => {
   await user.save()
 
   // send email verification mail
-  const content = `Your veirfication code is ${verification.code}`
+  const content = `Your veirfication code is ${verification?.code}`
   // const verificationLink = `${config.server_base_url}/v1/auth/verify-email/${user._id}?userCode=${verification.code}`
   // const content = `Click the following link to verify your email: ${verificationLink}`
   const mailOptions = {
@@ -219,16 +219,12 @@ const userEmailVerify = async (req, res) => {
 
 // controller for send otp
 const sendOTP = async (req, res) => {
-  const { id } = req.params
   const { email } = req.body
-  if (!id) {
-    throw new CustomError.BadRequestError('Missing id in request params!')
-  }
   if (!email) {
     throw new CustomError.BadRequestError('Missing email in request body!')
   }
 
-  const user = await userServices.getSpecificUser(id)
+  const user = await authServices.getUserByEmail(email)
   if (!user) {
     throw new CustomError.BadRequestError('User not found!')
   }
@@ -281,16 +277,14 @@ const sendOTP = async (req, res) => {
 
 // controller for verify otp
 const verifyOTP = async (req, res) => {
-  const userId = req.params.id
+  const email = req.body.email
   const userOTP = req.body.otp
-  if (!userId) {
-    throw new CustomError.BadRequestError('Missing user id in request params!')
-  }
+
   if (!userOTP) {
     throw new CustomError.BadRequestError('Missing OTP in request body!')
   }
 
-  const user = await userServices.getSpecificUser(userId)
+  const user = await authServices.getUserByEmail(email)
   if (!user) {
     throw new CustomError.BadRequestError('User not found!')
   }
@@ -300,6 +294,25 @@ const verifyOTP = async (req, res) => {
     throw new CustomError.BadRequestError('Invalid OTP!')
   }
 
+  // generate token
+  const payload = {
+    userId: user.userId,
+    email: user.email,
+    role: user.role
+  }
+
+  const accessToken = jwtHelpers.createToken(
+    payload,
+    config.jwt_access_token_secret,
+    config.jwt_access_token_expiresin
+  )
+
+  const refreshToken = jwtHelpers.createToken(
+    payload,
+    config.jwt_refresh_token_secret,
+    config.jwt_refresh_token_expiresin
+  )
+
   // set null verification object in user model
   await User.findByIdAndUpdate(user._id, {
     verification: { code: null, expireDate: null }
@@ -308,24 +321,31 @@ const verifyOTP = async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     status: 'success',
-    message: 'OTP match successfull'
+    message: 'OTP match successfull',
+    data: {
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      _id: user._id,
+      userId: user.userId,
+      isEmailVerified: user.isEmailVerified,
+      accessToken
+    }
   })
 }
 
 // controller for reset password
 const resetPassword = async (req, res) => {
-  const userId = req.params.id
+  const email = req.body.email
   const newPassword = req.body.newPassword
-  if (!userId) {
-    throw new CustomError.BadRequestError('Missing user id in request params!')
-  }
-  if (!newPassword) {
+
+  if (!email || !newPassword) {
     throw new CustomError.BadRequestError(
       'Missing new password in request body!'
     )
   }
 
-  const user = await userServices.getSpecificUser(userId)
+  const user = await authServices.getUserByEmail(email)
   if (!user) {
     throw new CustomError.BadRequestError('User not found!')
   }
@@ -399,15 +419,16 @@ const getAccessTokenByRefreshToken = async (req, res) => {
   // set refresh token into cookie
   const cookieOptions = {
     secure: config.env === 'production',
-    httpOnly: true,
-  };
+    httpOnly: true
+  }
 
-  res.cookie('refresh_token', actualRefreshToken, cookieOptions);
+  res.cookie('refresh_token', actualRefreshToken, cookieOptions)
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
-    status: "success",
-    message: "New access token created using refresh token. User logged In successful",
+    status: 'success',
+    message:
+      'New access token created using refresh token. User logged In successful',
     data: {
       accessToken: newAccessToken
     }

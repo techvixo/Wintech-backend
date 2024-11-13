@@ -2,7 +2,7 @@ const express = require('express');
 const partnerControllers = require('./partner.controllers');
 const requestValidator = require('../../middlewares/requestValidator');
 const PartnerValidationZodSchema = require('./partner.validation');
-const authorization = require('../../middlewares/authorization');
+// const authorization = require('../../middlewares/authorization');
 
 const partnerRouter = express.Router();
 

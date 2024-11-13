@@ -23,13 +23,13 @@ authRoute.get(
 )
 
 // route for send password reset OTP
-authRoute.post('/forget-password/send-otp/:id', authControllers.sendOTP)
+authRoute.post('/forget-password/send-otp/', authControllers.sendOTP)
 
 // route for verify OTP
-authRoute.post('/verify-otp/:id', authControllers.verifyOTP)
+authRoute.post('/verify-otp', authControllers.verifyOTP)
 
 // route for reset password
-authRoute.post('/reset-password/:id', authControllers.resetPassword)
+authRoute.post('/reset-password', authControllers.resetPassword)
 
 // route for change password
 authRoute.post('/change-password/:id', requestValidator(AuthValidation.changePasswordZodSchema), authControllers.changePassword)
