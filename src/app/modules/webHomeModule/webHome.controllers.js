@@ -171,6 +171,34 @@ const deleteFeaturedVideo = async (req, res) => {
   })
 }
 
+// Controller to update an individual CNC Machine Part
+const updateCncMachinePart = async (req, res) => {
+  const { id } = req.params;
+  const partData = req.body;
+
+  // Upload new image if provided
+  if (req.files) {
+    const imageUrl = await fileUploader(
+      req.files,
+      `cnc-machine-part-${partData.title_en || id}`,
+      'image'
+    );
+    partData.image = imageUrl;
+  }
+
+  const updatedPart = await webHomeServices.updateCncMachinePart(id, partData);
+
+  if (!updatedPart) {
+    throw new CustomError.NotFoundError('CNC Machine Part not found or update failed!');
+  }
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'CNC Machine Part updated successfully'
+  });
+};
+
 module.exports = {
   initializeWebHome,
   getWebHome,
@@ -179,5 +207,6 @@ module.exports = {
   addCustomPart,
   deleteCustomPart,
   addFeaturedVideo,
-  deleteFeaturedVideo
+  deleteFeaturedVideo,
+  updateCncMachinePart
 }

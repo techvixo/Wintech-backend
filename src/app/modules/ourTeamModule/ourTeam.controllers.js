@@ -7,9 +7,10 @@ const fileUploader = require('../../../utils/fileUploader');
 // Controller for creating a new team member
 const createTeamMember = async (req, res) => {
   const teamMemberData = req.body;
+  console.log(teamMemberData)
 
   // Upload image if present
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const imagePath = await fileUploader(req.files, `team-image-${teamMemberData.name_en}`, 'image');
     teamMemberData.image = imagePath;
   }
@@ -65,7 +66,7 @@ const updateSpecificTeamMember = async (req, res) => {
   const updateData = req.body;
 
   // If there's a new image to upload
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const imagePath = await fileUploader(req.files, `team-image-${updateData.name_en}`, 'image');
     updateData.image = imagePath;
   }

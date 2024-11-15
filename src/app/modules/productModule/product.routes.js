@@ -9,7 +9,7 @@ const productRouter = express.Router();
 productRouter.post(
     '/create',
     // authorization('admin'),
-    requestValidator(ProductValidationZodSchema.createProductZodSchema),
+    // requestValidator(ProductValidationZodSchema.createProductZodSchema),
     productControllers.createProduct
   )
   productRouter.get('/all', productControllers.getAllProducts)

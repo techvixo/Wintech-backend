@@ -80,6 +80,21 @@ const deleteCncMachinePart = async (partId) => {
   return webHome;
 };
 
+// service for update cnc machine part
+const updateCncMachinePart = async (partId, partData) => {
+  const webHome = await WebHome.findOneAndUpdate(
+    { 'cnc_machine_parts._id': partId },
+    {
+      $set: {
+        'cnc_machine_parts.$': partData,
+      },
+    },
+    { new: true } // Return the updated document
+  );
+
+  return webHome;
+};
+
 module.exports = {
   initializeWebHome,
   getWebHome,
@@ -89,4 +104,5 @@ module.exports = {
   deleteCustomPartsVideo,
   addCncMachinePart,
   deleteCncMachinePart,
+  updateCncMachinePart,
 };
