@@ -35,9 +35,9 @@ const createHero = async (req, res) => {
 const getAllHeroes = async (req, res) => {
   const heroes = await heroServices.getAllHeroes();
 
-  if(heroes.length === 0){
-    throw new CustomError.BadRequestError("No heroes found!")
-  }
+  // if(heroes.length === 0){
+  //   throw new CustomError.BadRequestError("No heroes found!")
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

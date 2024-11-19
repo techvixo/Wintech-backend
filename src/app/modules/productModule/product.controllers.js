@@ -53,9 +53,9 @@ const createProduct = async (req, res) => {
 // Controller for getting all products
 const getAllProducts = async (req, res) => {
   const products = await productServices.getAllProducts()
-  if (products.length === 0) {
-    throw new CustomError.NotFoundError('No products found!')
-  }
+  // if (products.length === 0) {
+  //   throw new CustomError.NotFoundError('No products found!')
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

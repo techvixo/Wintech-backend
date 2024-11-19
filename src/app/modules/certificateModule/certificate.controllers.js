@@ -32,9 +32,9 @@ const createCertificate = async (req, res) => {
 // Controller for getting all certificates
 const getAllCertificates = async (req, res) => {
   const certificates = await certificateServices.getAllCertificates()
-  if (certificates.length === 0) {
-    throw new CustomError.NotFoundError('No certificates found!')
-  }
+  // if (certificates.length === 0) {
+  //   throw new CustomError.NotFoundError('No certificates found!')
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

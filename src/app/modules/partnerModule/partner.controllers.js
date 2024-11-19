@@ -30,9 +30,9 @@ const createPartner = async (req, res) => {
 // Controller for getting all partners
 const getAllPartners = async (req, res) => {
   const partners = await partnerServices.getAllPartners();
-  if (partners.length === 0) {
-    throw new CustomError.NotFoundError('No partners found!');
-  }
+  // if (partners.length === 0) {
+  //   throw new CustomError.NotFoundError('No partners found!');
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
