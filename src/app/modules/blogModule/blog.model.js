@@ -10,22 +10,22 @@ const mongooseSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    description_en: {
+    description_en: [{
         type: String,
         required: true,
-    },
-    description_cn: {
+    }],
+    description_cn: [{
         type: String,
         required: true,
-    },
+    }],
     heading_image: String,
-    featured_images: [String],
-    author: {
-        name_en: String,
-        name_cn: String,
-        adminId: String,
-        email: String,
-    },
+    // featured_images: [String],
+    // author: {
+    //     name_en: String,
+    //     name_cn: String,
+    //     adminId: String,
+    //     email: String,
+    // },
     status: {
         type: Boolean,
         default: true,
