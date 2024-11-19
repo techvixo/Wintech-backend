@@ -27,4 +27,7 @@ userRouter.patch('/update/:id', userControllers.updateSpecificUser)
 // change profile image of specific user
 userRouter.patch('/update/profile-picture/:id', userControllers.changeUserProfileImage)
 
+// route for send email for customer enquery
+userRouter.post('/email/customer-enquery', userControllers.sendGetInTouch)
+
 module.exports = userRouter

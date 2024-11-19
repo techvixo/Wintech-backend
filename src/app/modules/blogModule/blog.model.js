@@ -10,18 +10,14 @@ const mongooseSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    description_en: [
-      {
+    description_en: [{
         type: String,
-        required: true
-      }
-    ],
-    description_cn: [
-      {
+        required: true,
+    }],
+    description_cn: [{
         type: String,
-        required: true
-      }
-    ],
+        required: true,
+    }],
     heading_image: String,
     // featured_images: [String],
     // author: {

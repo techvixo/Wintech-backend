@@ -8,12 +8,6 @@ const createBlogZodSchema = z.object({
     name_cn: z.string({
       required_error: 'Blog chinese name is required!'
     }),
-    description_en: z.string({
-      required_error: 'Blog english description is required!'
-    }),
-    description_cn: z.string({
-      required_error: 'Blog chinese description is required!'
-    }),
     author: z
       .object({
         adminId: z.string().optional(),

@@ -4,12 +4,16 @@ const CustomError = require('../../errors')
 const sendResponse = require('../../../shared/sendResponse')
 const fileUploader = require('../../../utils/fileUploader')
 const IdGenerator = require('../../../utils/idGenerator')
+const { getSpecificCategory } = require('../categoryModule/category.services')
 
 // Controller for creating a new product
 const createProduct = async (req, res) => {
   const productData = req.body
   const productId = IdGenerator.generateId()
-  productData.category = JSON.parse(productData.category)
+
+  if (productData.category && typeof productData.category === 'string') {
+    productData.category = JSON.parse(productData.category)
+  }
 
   productData.productId = productId
 
@@ -32,6 +36,11 @@ const createProduct = async (req, res) => {
   if (!product) {
     throw new CustomError.BadRequestError('Failed to create new product!')
   }
+
+  const category = await getSpecificCategory(product.category.categoryId)
+// console.log(category)
+  category.products.push(product._id)
+  await category.save()
 
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
