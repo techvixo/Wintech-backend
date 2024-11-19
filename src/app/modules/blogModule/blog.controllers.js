@@ -91,7 +91,9 @@ const updateSpecificBlog = async (req, res) => {
   //   updateData.featured_images = featuredImagePaths;
   // }
   const getBlog = await blogServices.getSpecificBlog(id)
-console.log(getBlog)
+  if(!getBlog){
+    throw new CustomError.BadRequestError("Invalid blog id!")
+  }
   if (updateData.description_cn) {
     getBlog.description_cn.push(updateData.description_cn)
     await getBlog.save()
