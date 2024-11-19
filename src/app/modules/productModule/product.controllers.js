@@ -9,7 +9,10 @@ const IdGenerator = require('../../../utils/idGenerator')
 const createProduct = async (req, res) => {
   const productData = req.body
   const productId = IdGenerator.generateId()
-  productData.category = JSON.parse(productData.category)
+
+  if (productData.category && typeof productData.category === 'string') {
+    productData.category = JSON.parse(productData.category)
+  }
 
   productData.productId = productId
 

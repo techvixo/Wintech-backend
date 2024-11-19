@@ -260,7 +260,7 @@ const sendOTP = async (req, res) => {
   `
 
   const mailOptions = {
-    from: 'fahadtabedge@gmail.com',
+    from: 'nafei.wintecmachining@gmail.com',
     to: email,
     subject: 'Wintech - Password Reset OTP',
     text: textContent
