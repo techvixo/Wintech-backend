@@ -5,6 +5,11 @@ const createUser = async(data) => {
     return await User.create(data);
 }
 
+// service for get all user
+const getAllUser = async() => {
+    return await User.find().select("-password")
+}
+
 // service for get specific user
 const getSpecificUser = async(id) => {
     return await User.findOne({_id: id}).select("-password")
@@ -25,6 +30,7 @@ const deleteSpecificUser = async(id) => {
 
 module.exports = {
     createUser,
+    getAllUser,
     getSpecificUser,
     updateSpecificUser,
     deleteSpecificUser,
