@@ -31,4 +31,7 @@ productRouter.post(
     productControllers.deleteSpecificProduct
   )
 
+  // retrive related product
+  productRouter.post('/retrive/related-product', productControllers.getRelatedProduct)
+
 module.exports = productRouter

@@ -132,10 +132,26 @@ const deleteSpecificProduct = async (req, res) => {
   })
 }
 
+// controller for get related product 
+const getRelatedProduct = async(req, res) => {
+  const {categoryId, targetProductId} = req.body;
+  
+  const category = await getSpecificCategory(categoryId);
+  const relatedProducts = category.products.filter(product => product._id.toString() !== targetProductId)
+  
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Related product retrive successfull',
+    data: relatedProducts
+  })
+}
+
 module.exports = {
   createProduct,
   getAllProducts,
   getSpecificProduct,
   updateSpecificProduct,
-  deleteSpecificProduct
+  deleteSpecificProduct,
+  getRelatedProduct
 }
