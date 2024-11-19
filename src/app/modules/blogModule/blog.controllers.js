@@ -14,10 +14,10 @@ const createBlog = async (req, res) => {
   }
 
   // Upload featured images if present
-  if (req.files || req.files.featured_images) {
-    const featuredImagePaths = await fileUploader(req.files, `blog-featured-${blogData.name_en}`, 'featured_images')
-    blogData.featured_images = featuredImagePaths;
-  }
+  // if (req.files || req.files.featured_images) {
+  //   const featuredImagePaths = await fileUploader(req.files, `blog-featured-${blogData.name_en}`, 'featured_images')
+  //   blogData.featured_images = featuredImagePaths;
+  // }
 
   const blog = await blogServices.createBlog(blogData);
   if (!blog) {
