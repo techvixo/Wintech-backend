@@ -4,9 +4,10 @@ const heroSchema = new mongoose.Schema(
   {
     title_en: String,
     title_cn: String,
-    subTitle_en: String,
-    subTitle_cn: String,
-    images: [String]
+    description_en: String,
+    description_cn: String,
+    link: String,
+    image: String
   },
   {
     timestamps: true

@@ -33,9 +33,9 @@ const createCategory = async (req, res) => {
 // Controller for getting a specific category
 const getAllCategories = async (req, res) => {
   const categories = await categoryServices.getAllCategory();
-  if (categories.length === 0) {
-    throw new CustomError.NotFoundError('No categories found!');
-  }
+  // if (categories.length === 0) {
+  //   throw new CustomError.NotFoundError('No categories found!');
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

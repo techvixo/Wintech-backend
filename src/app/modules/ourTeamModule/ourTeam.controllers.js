@@ -31,9 +31,9 @@ const createTeamMember = async (req, res) => {
 // Controller for getting all team members
 const getAllTeamMembers = async (req, res) => {
   const teamMembers = await ourTeamServices.getAllTeamMembers();
-  if (teamMembers.length === 0) {
-    throw new CustomError.NotFoundError('No team members found!');
-  }
+  // if (teamMembers.length === 0) {
+  //   throw new CustomError.NotFoundError('No team members found!');
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

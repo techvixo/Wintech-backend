@@ -19,9 +19,9 @@ const initializeWebHome = async (req, res) => {
 // Controller to get WebHome data
 const getWebHome = async (req, res) => {
   const webHome = await webHomeServices.getWebHome()
-  if (!webHome) {
-    throw new CustomError.NotFoundError('WebHome not found!')
-  }
+  // if (!webHome) {
+  //   throw new CustomError.NotFoundError('WebHome not found!')
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

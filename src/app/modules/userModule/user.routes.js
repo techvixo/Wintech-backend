@@ -15,6 +15,8 @@ userRouter.post(
   userControllers.createUser
 )
 
+userRouter.get('/all', userControllers.getAllUsers)
+
 // get specific user
 userRouter.get('/:id', requestValidator(UserValidationZodSchema.getSpecificUserZodSchema), userControllers.getSpecificUser)
 

@@ -40,9 +40,9 @@ const createBlog = async (req, res) => {
 // Controller for getting all blog posts
 const getAllBlogs = async (req, res) => {
   const blogs = await blogServices.getAllBlogs()
-  if (blogs.length === 0) {
-    throw new CustomError.NotFoundError('No blog posts found!')
-  }
+  // if (blogs.length === 0) {
+  //   throw new CustomError.NotFoundError('No blog posts found!')
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

@@ -4,6 +4,7 @@ const CustomError = require('../../errors')
 const sendResponse = require('../../../shared/sendResponse')
 const fileUploader = require('../../../utils/fileUploader')
 const IdGenerator = require('../../../utils/idGenerator')
+const { getSpecificCategory } = require('../categoryModule/category.services')
 
 // Controller for creating a new product
 const createProduct = async (req, res) => {
@@ -36,6 +37,11 @@ const createProduct = async (req, res) => {
     throw new CustomError.BadRequestError('Failed to create new product!')
   }
 
+  const category = await getSpecificCategory(product.category.categoryId)
+// console.log(category)
+  category.products.push(product._id)
+  await category.save()
+
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     status: 'success',
@@ -47,9 +53,9 @@ const createProduct = async (req, res) => {
 // Controller for getting all products
 const getAllProducts = async (req, res) => {
   const products = await productServices.getAllProducts()
-  if (products.length === 0) {
-    throw new CustomError.NotFoundError('No products found!')
-  }
+  // if (products.length === 0) {
+  //   throw new CustomError.NotFoundError('No products found!')
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -126,10 +132,26 @@ const deleteSpecificProduct = async (req, res) => {
   })
 }
 
+// controller for get related product 
+const getRelatedProduct = async(req, res) => {
+  const {categoryId, targetProductId} = req.body;
+  
+  const category = await getSpecificCategory(categoryId);
+  const relatedProducts = category.products.filter(product => product._id.toString() !== targetProductId)
+  
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Related product retrive successfull',
+    data: relatedProducts
+  })
+}
+
 module.exports = {
   createProduct,
   getAllProducts,
   getSpecificProduct,
   updateSpecificProduct,
-  deleteSpecificProduct
+  deleteSpecificProduct,
+  getRelatedProduct
 }

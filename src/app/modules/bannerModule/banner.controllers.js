@@ -30,9 +30,9 @@ const createBanner = async (req, res) => {
 // Controller to get all banners
 const getAllBanners = async (req, res) => {
   const banners = await bannerServices.getAllBanners();
-  if (banners.length === 0) {
-    throw new CustomError.NotFoundError('No banners found!');
-  }
+  // if (banners.length === 0) {
+  //   throw new CustomError.NotFoundError('No banners found!');
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

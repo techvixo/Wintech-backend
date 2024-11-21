@@ -30,9 +30,9 @@ const createPortfolio = async (req, res) => {
 // Controller for getting all portfolio items
 const getAllPortfolios = async (req, res) => {
   const portfolios = await portfolioServices.getAllPortfolios();
-  if (portfolios.length === 0) {
-    throw new CustomError.NotFoundError('No portfolios found!');
-  }
+  // if (portfolios.length === 0) {
+  //   throw new CustomError.NotFoundError('No portfolios found!');
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

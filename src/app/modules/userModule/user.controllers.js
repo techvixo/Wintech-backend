@@ -60,6 +60,18 @@ const createUser = async (req, res) => {
   })
 }
 
+// Controller for getting all users
+const getAllUsers = async (req, res) => {
+  const users = await userServices.getAllUser()
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    status: 'success',
+    message: 'Users retrieved successfully',
+    data: users
+  })
+}
+
 // controller for get specific user
 const getSpecificUser = async (req, res) => {
   const { id } = req.params
@@ -173,6 +185,7 @@ const sendGetInTouch = async (req, res) => {
 
 module.exports = {
   createUser,
+  getAllUsers,
   getSpecificUser,
   deleteSpecificUser,
   updateSpecificUser,
