@@ -6,12 +6,12 @@ const Message = require('./message.model')
 
 // controller for start-chat with user by email
 const startChatWithUser = async (req, res) => {
-  const { email } = req.params
+  const { fullName, email } = req.body
 
   const chatUser = await messageServices.getChatUserByEmail(email)
 
   if (!chatUser) {
-    const chatUser = await messageServices.createChatUser({ email })
+    const chatUser = await messageServices.createChatUser({ email, fullName })
     if (!chatUser) {
       throw new CustomError.BadRequestError('Failed to start chat!')
     }
@@ -25,6 +25,8 @@ const startChatWithUser = async (req, res) => {
     status: 'success',
     message: 'Chat start successfull.',
     data: {
+      fullName: chatUser.fullName,
+      email: chatUser.email,
       previousMessages: messages
     }
   })
