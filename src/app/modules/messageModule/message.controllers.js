@@ -25,6 +25,8 @@ const startChatWithUser = async (req, res) => {
     status: 'success',
     message: 'Chat start successfull.',
     data: {
+      fullName: chatUser.fullName,
+      email: chatUser.email,
       previousMessages: messages
     }
   })
