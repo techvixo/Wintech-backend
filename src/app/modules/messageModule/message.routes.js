@@ -3,7 +3,7 @@ const messageControllers = require('./message.controllers')
 
 const messageRouter = express.Router();
 
-messageRouter.get('/start-chat/:email', messageControllers.startChatWithUser)
+messageRouter.post('/start-chat', messageControllers.startChatWithUser)
 messageRouter.post('/chat-user/send-message', messageControllers.sendMessageFromChatUser)
 messageRouter.post('/admin/send-message', messageControllers.sendMessageFromAdmin)
 messageRouter.get('/all', messageControllers.getAllChatUserMessages)

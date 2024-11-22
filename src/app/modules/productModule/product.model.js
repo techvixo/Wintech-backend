@@ -24,8 +24,8 @@ const productSchema = new mongoose.Schema(
         type: String,
         required: true,
     },
-    descritpion_en: String,
-    descritpion_cn: String,
+    description_en: String,
+    description_cn: String,
     status: {
         type: String,
         enum: ["active", "disable"],
