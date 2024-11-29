@@ -7,7 +7,8 @@ const heroSchema = new mongoose.Schema(
     description_en: String,
     description_cn: String,
     link: String,
-    image: String
+    image: String,
+    visitCount: Number,
   },
   {
     timestamps: true

@@ -31,9 +31,41 @@ const createHero = async (req, res) => {
   });
 };
 
+// Controller for update a hero
+const updateHero = async (req, res) => {
+  const {id} = req.params
+  const heroData = req.body;
+
+  // Upload images if provided
+  if (req.files) {
+    const heroImage = await fileUploader(
+      req.files,
+      `hero-image-${heroData.title_en}`,
+      'image'
+    );
+    heroData.image = heroImage;
+  }
+
+  const updatedHero = await heroServices.updateHero(id, heroData);
+  if(!updatedHero.modifiedCount){
+    throw new CustomError.BadRequestError("Failed to update hero!")
+  }
+
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    status: 'success',
+    message: 'Hero update successful',
+  });
+};
+
 // Controller for getting all heroes
 const getAllHeroes = async (req, res) => {
   const heroes = await heroServices.getAllHeroes();
+  // console.log(req.ip)
+  const firstHero = heroes[0]
+  firstHero.visitCount = firstHero.visitCount + 1 || 0 + 1
+  await firstHero.save()
+  // console.log(firstHero)
 
   // if(heroes.length === 0){
   //   throw new CustomError.BadRequestError("No heroes found!")
@@ -65,6 +97,7 @@ const deleteSpecificHero = async (req, res) => {
 
 module.exports = {
   createHero,
+  updateHero,
   getAllHeroes,
   deleteSpecificHero,
 };
