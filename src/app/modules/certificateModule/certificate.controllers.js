@@ -67,7 +67,7 @@ const updateSpecificCertificate = async (req, res) => {
   const updateData = req.body
 
   // If there's a new image to upload
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const imagePath = await fileUploader(
       req.files,
       `certificate-image-${updateData.name_en}`,

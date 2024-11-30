@@ -9,7 +9,7 @@ const createPartner = async (req, res) => {
   const partnerData = req.body;
 
   // Upload image if present
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const imagePath = await fileUploader(req.files, `partner-image-${partnerData.name_en}`, 'image');
     partnerData.image = imagePath;
   }
@@ -65,7 +65,7 @@ const updateSpecificPartner = async (req, res) => {
   const updateData = req.body;
 
   // If there's a new image to upload
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const imagePath = await fileUploader(req.files, `partner-image-${updateData.name_en}`, 'image');
     updateData.image = imagePath;
   }

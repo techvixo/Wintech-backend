@@ -9,7 +9,7 @@ const createPortfolio = async (req, res) => {
   const portfolioData = req.body;
 
   // Upload image if present
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const portfolioImagePath = await fileUploader(req.files, `portfolio-image-${portfolioData.name}`, 'image');
     portfolioData.image = portfolioImagePath;
   }
@@ -65,7 +65,7 @@ const updateSpecificPortfolio = async (req, res) => {
   const updateData = req.body;
 
   // If there's a new image to upload
-  if (req.files || req.files.length > 0) {
+  if (req.files || req.files?.length > 0) {
     const portfolioImagePath = await fileUploader(req.files, `portfolio-image-${updateData.name}`, 'image');
     updateData.image = portfolioImagePath;
   }
