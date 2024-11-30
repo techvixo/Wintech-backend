@@ -6,9 +6,12 @@ const { getAllHeroes } = require("../heroModule/hero.services")
 const { getAllPortfolios } = require("../portfolioModule/portfolio.services")
 const Product = require("../productModule/product.model")
 const { getAllProducts } = require("../productModule/product.services")
+const { getSpecificUser } = require("../userModule/user.services")
 
 
 const dashboard = async(req, res) => {
+    const {id} = req.params
+    const user = await getSpecificUser(id)
     const getHeros = await getAllHeroes()
     const totalVisitors = getHeros[0].visitCount || 0 + 1
 
@@ -30,6 +33,7 @@ const dashboard = async(req, res) => {
         status: 'success',
         message: 'dashboard insights retrieved successfully',
         data: {
+            user,
             totalVisitors,
             totalBlog,
             totalPortfolio,
