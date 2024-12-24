@@ -3,6 +3,7 @@ const { StatusCodes } = require('http-status-codes')
 const CustomError = require('../../errors')
 const sendResponse = require('../../../shared/sendResponse')
 const fileUploader = require('../../../utils/fileUploader')
+const WebHome = require('./webHome.model')
 
 // Controller to initialize WebHome
 const initializeWebHome = async (req, res) => {
@@ -184,7 +185,14 @@ const updateCncMachinePart = async (req, res) => {
       'image'
     );
     partData.image = imageUrl;
+  }else{
+    const allPartData = await webHomeServices.getWebHome()
+    const currentPartData = allPartData.cnc_machine_parts.find(p => p._id.toString() === id)
+    partData.image = currentPartData.image
+    // console.log(currentPartData.image)
   }
+
+  // console.log(partData)
 
   const updatedPart = await webHomeServices.updateCncMachinePart(id, partData);
 

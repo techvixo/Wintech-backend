@@ -47,9 +47,9 @@ const getSpecificBanner = async (req, res) => {
   const { id } = req.params;
 
   const banner = await bannerServices.getSpecificBanner(id);
-  if (!banner) {
-    throw new CustomError.NotFoundError('Banner not found!');
-  }
+  // if (!banner) {
+  //   throw new CustomError.NotFoundError('Banner not found!');
+  // }
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -65,7 +65,7 @@ const updateSpecificBanner = async (req, res) => {
   const updateData = req.body;
 
   // Update banner image if present
-  if (req.files || req.files.banner_image) {
+  if (req.files || req.files?.banner_image) {
     const bannerImagePath = await fileUploader(req.files, `banner-${updateData.title_en}`, 'banner_image');
     updateData.banner_image = bannerImagePath;
   }
